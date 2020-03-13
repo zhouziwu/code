@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzw.teacher.dao.TeacherDao">
+    <select id="test" resultType="com.zzw.teacher.entity.TeacherEntity">
+        select * from teacher
+    </select>
+</mapper>
