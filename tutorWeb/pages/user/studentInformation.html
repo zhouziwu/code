@@ -148,7 +148,34 @@
 								icon: 1,
 								time: 1000
 							}, function() {
-								window.location.href = "teacherInformation.html";
+								window.location.href = "studentInformation.html";
+							});
+						} else {
+							layer.msg("修改失败！", {
+								icon: 2
+							});
+						}
+					});
+			}
+			/* 修改学生信息 */
+			function modifyStudent() {
+				var grade = $("#grade").val();
+				if (grade.length == null || grade.length == 0) {
+					tips("填写不符合!", "#grade", 2);
+					return;
+				}
+			
+				$.get("http://localhost:8080/student/modifyInformation", {
+						user: $("#user").val(),
+						grade: $("#grade").val()
+					},
+					function(result) {
+						if (result == "success") {
+							layer.msg("修改成功!", {
+								icon: 1,
+								time: 1000
+							}, function() {
+								window.location.href = "studentInformation.html";
 							});
 						} else {
 							layer.msg("修改失败！", {
@@ -165,9 +192,9 @@
 				var uploadInst = upload.render({
 					elem: '#btnImg', //绑定元素
 					url: 'http://localhost:8080/user/modifyImg', //上传接口
-					size: '10000',
 					data: {
-						username: localStorage.getItem("tutor")
+						username: localStorage.getItem("tutor"),
+						what: "头像"
 					},
 					acceptMime: 'image/jpg, image/png, image/gif, image/bmp, image/jpeg',
 					/*method: 'get',*/
@@ -289,7 +316,7 @@
 								</select>
 							</div>
 							<div class="layui-form-item" align="center">
-								<a class="layui-btn" href="javascript:modifyInformation()">确认修改</a>
+								<a class="layui-btn" href="javascript:modifyStudent()">确认修改</a>
 							</div>
 						</div>
 					</div>

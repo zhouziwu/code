@@ -160,6 +160,23 @@
 						}
 					);
 				});
+				/* 用户实名认证 */
+				$("#certification").click(function() {
+					$.get("http://localhost:8080/user/getUserByUsername", {
+							username: localStorage.getItem("tutor")
+						},
+						function(res) {
+							if (res.all.certification == "1") {
+								layer.msg("已实名认证!", {
+									icon: 6,
+									time: 3000
+								});
+							} else {
+								window.location.href = "pages/user/certification.html";
+							}
+						}
+					);
+				});
 			});
 
 			/*layui弹出消息*/
@@ -1009,14 +1026,25 @@
 							</button>
 							<ul class="dropdown-menu">
 								<li>
-									<a id="information" class="pointer">我的信息</a>
+									<a id="information" class="pointer">
+										<span class="glyphicon glyphicon-user"></span>我的信息
+									</a>
 								</li>
 								<li>
-									<a id="modify" class="pointer">修改密码</a>
+									<a id="certification" class="pointer">
+										<span class="glyphicon glyphicon-credit-card"></span>实名认证
+									</a>
+								</li>
+								<li>
+									<a id="modify" class="pointer">
+										<span class="glyphicon glyphicon-pencil"></span>修改密码
+									</a>
 								</li>
 								<li role="separator" class="divider"></li>
 								<li>
-									<a href="" id="getOut">注销</a>
+									<a href="" id="getOut">
+										<span class="glyphicon glyphicon-log-out"></span>注销
+									</a>
 								</li>
 							</ul>
 						</div>

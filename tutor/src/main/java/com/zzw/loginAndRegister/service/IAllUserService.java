@@ -88,7 +88,7 @@ public interface IAllUserService extends IService<AllUserEntity> {
      * @param file 新头像
      * @return 新头像路径
      */
-    Map<String, Object> modifyImg (String username, MultipartFile file);
+    Map<String, Object> modifyImg (String username, MultipartFile file, String what);
 
     /**
      * 按用户名查询用户信息
@@ -104,4 +104,12 @@ public interface IAllUserService extends IService<AllUserEntity> {
      */
     String modifyInformation (String user, String address, String qq, String tel, String gender,
                               String city, String interest, String speciality);
+
+    /**
+     * 用户实名认证
+     * @param truename 真实姓名
+     * @param idcard 身份证
+     * @return String
+     */
+    String certification (String user, String truename, String idcard);
 }

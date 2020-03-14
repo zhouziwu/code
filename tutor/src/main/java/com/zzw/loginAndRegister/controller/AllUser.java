@@ -130,12 +130,13 @@ public class AllUser {
      * 上传新头像
      * @param username 用户名
      * @param file 新头像
+     * @param what 头像/身份证
      * @return 新头像路径
      */
     @ApiOperation("上传新图片")
     @PostMapping("/modifyImg")
-    public Map<String, Object> modifyImg (String username, MultipartFile file) {
-        return iAllUserService.modifyImg(username, file);
+    public Map<String, Object> modifyImg (String username, MultipartFile file, String what) {
+        return iAllUserService.modifyImg(username, file, what);
     }
 
     /**
@@ -153,14 +154,6 @@ public class AllUser {
      * 用户信息修改
      * @param user 用户名
      * @return String
-     * user: $("#user").val(),
-     * 						address: $("#address").val(),
-     * 						qq: $("#qq").val(),
-     * 						tel: $("#tel").val(),
-     * 						gender: $("#gender").val(),
-     * 						city: $("#city").val(),
-     * 						interest: $("#interest").val(),
-     * 						speciality: $("#speciality").val(),
      */
     @ApiOperation("用户信息修改")
     @GetMapping("/modifyInformation")
@@ -169,4 +162,17 @@ public class AllUser {
         return iAllUserService.modifyInformation(user, address, qq, tel, gender, city
                 , interest, speciality);
     }
+
+    /**
+     * 用户实名认证
+     * @param truename 真实姓名
+     * @param idcard 身份证
+     * @return String
+     */
+    @ApiOperation("用户实名认证")
+    @GetMapping("/certification")
+    public String certification (String user, String truename, String idcard) {
+        return iAllUserService.certification(user, truename, idcard);
+    }
+
 }

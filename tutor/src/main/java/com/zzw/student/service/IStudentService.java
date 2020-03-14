@@ -11,4 +11,12 @@ import com.zzw.student.entity.StudentEntity;
  * @since 2020/2/28
  */
 public interface IStudentService extends IService<StudentEntity> {
+
+    /**
+     * 修改老师的信息
+     * @param user 用户名
+     * @param grade 年级
+     * @return String
+     */
+    String modifyInformation (String user, String grade);
 }

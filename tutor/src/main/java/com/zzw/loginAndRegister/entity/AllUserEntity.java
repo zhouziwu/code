@@ -130,6 +130,18 @@ public class AllUserEntity extends Model<AllUserEntity> {
     /**
      * 头像存储路径
      */
-    @TableField("img")
+    @TableField("head_img")
     private String img;
+
+    /**
+     * 身份证正面照片路径
+     */
+    @TableField("id_img_before")
+    private String idImgBefore;
+
+    /**
+     * 身份证反面照片路径
+     */
+    @TableField("id_img_after")
+    private String idImgAfter;
 }

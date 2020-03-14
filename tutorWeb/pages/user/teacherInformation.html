@@ -169,7 +169,90 @@
 						gender: $("#gender").val(),
 						city: $("#city").val(),
 						interest: $("#interest").val(),
-						speciality: $("#speciality").val(),
+						speciality: $("#speciality").val()
+					},
+					function(result) {
+						if (result == "success") {
+							layer.msg("修改成功!", {
+								icon: 1,
+								time: 1000
+							}, function() {
+								window.location.href = "teacherInformation.html";
+							});
+						} else {
+							layer.msg("修改失败！", {
+								icon: 2
+							});
+						}
+					});
+			}
+			/* 修改老师信息 */
+			function modifyTeacher() {
+				var birth = $("#birth").val();
+				if (birth.length == 0 || birth.length > 10) {
+					if (birth.length == 0) {
+						tips("出生年月未填写!", "#birth", 2);
+					} else {
+						tips("填写不符合!", "#birth", 2);
+					}
+					return;
+				}
+				var degree = $("#degree").val();
+				if (degree.length == 0) {
+					tips("最高学位未填写!", "#degree", 2);
+					return;
+				}
+				var university = $("#university").val();
+				if (university.length == 0 || university.length > 20) {
+					tips("未填写或填写不规范!", "#university", 2);
+					return;
+				}
+				var major = $("#major").val();
+				if (major.length == 0 || major.length > 20) {
+					tips("未填写或填写不规范!", "#major", 2);
+					return;
+				}
+				var subject = $("#subject").val();
+				if (subject.length == 0 || subject.length > 20) {
+					tips("未填写或填写不规范!", "#subject", 2);
+					return;
+				}
+				var graduate = $("#graduate").val();
+				if (graduate.length == null || graduate.length == 0) {
+					tips("不能为空", "#graduate", 2);
+					return;
+				}
+				var tutorMode = $("#tutorMode").val();
+				if (tutorMode.length == null || tutorMode.length == 0) {
+					tips("不能为空!", "#tutorMode", 2);
+					return;
+				}
+				var selfAssessment = $("#selfAssessment").val();
+				if (selfAssessment.length == null || selfAssessment.length == 0) {
+					tips("不能为空!", "#selfAssessment", 2);
+					return;
+				}
+				if (selfAssessment.length > 200) {
+					tips("超出200字限制!", "#selfAssessment", 2);
+					return;
+				}
+				var charge = $("#charge").val();
+				if (charge.length == null || charge.length == 0 || charge.length > 20) {
+					tips("填写不规范!", "#charge", 2);
+					return;
+				}
+			
+				$.get("http://localhost:8080/teacher/modifyInformation", {
+						user: $("#user").val(),
+						birth: $("#birth").val(),
+						degree: $("#degree").val(),
+						university: $("#university").val(),
+						major: $("#major").val(),
+						subject: $("#subject").val(),
+						graduate: $("#graduate").val(),
+						tutorMode: $("#tutorMode").val(),
+						selfAssessment: $("#selfAssessment").val(),
+						charge: $("#charge").val()
 					},
 					function(result) {
 						if (result == "success") {
@@ -195,7 +278,8 @@
 					elem: '#btnImg', //绑定元素
 					url: 'http://localhost:8080/user/modifyImg', //上传接口
 					data: {
-						username: localStorage.getItem("tutor")
+						username: localStorage.getItem("tutor"),
+						what: "头像"
 					},
 					acceptMime: 'image/jpg, image/png, image/gif, image/bmp, image/jpeg',
 					/*method: 'get',*/
@@ -314,8 +398,8 @@
 							<div class="layui-form-item">
 								<label>所学专业：</label>
 								<input id="major" name="major" required="required" placeholder="所学专业" />
-								<label>所教科目：</label>
-								<input id="subject" name="subject" required="required" placeholder="所教科目" />
+								<label>授课科目：</label>
+								<input id="subject" name="subject" required="required" placeholder="授课科目" />
 							</div>
 							<div class="layui-form-item" style="margin-top: 30px;margin-bottom: 30px;">
 								<label>是否毕业：</label>
@@ -343,7 +427,7 @@
 								</span>
 							</div>
 							<div class="layui-form-item" align="center">
-								<a class="layui-btn" href="javascript:modifyInformation()">确认修改</a>
+								<a class="layui-btn" href="javascript:modifyTeacher()">确认修改</a>
 							</div>
 						</div>
 					</div>

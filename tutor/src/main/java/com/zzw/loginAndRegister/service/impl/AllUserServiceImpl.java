@@ -15,6 +15,7 @@ import com.zzw.student.service.IStudentService;
 import com.zzw.teacher.entity.TeacherEntity;
 import com.zzw.teacher.service.ITeacherService;
 import com.zzw.utils.MD5Tools;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,15 +39,21 @@ import java.util.UUID;
 @Transactional
 public class AllUserServiceImpl extends ServiceImpl<AllUserDao, AllUserEntity> implements IAllUserService {
 
-    private final IStudentService iStudentService;
-    private final ITeacherService iTeacherService;
-    private final IParentService iParentService;
-
-    public AllUserServiceImpl(IStudentService iStudentService, ITeacherService iTeacherService, IParentService iParentService) {
-        this.iStudentService = iStudentService;
-        this.iTeacherService = iTeacherService;
-        this.iParentService = iParentService;
-    }
+    @Autowired
+    IStudentService iStudentService;
+    @Autowired
+    ITeacherService iTeacherService;
+    @Autowired
+    IParentService iParentService;
+//    private final IStudentService iStudentService;
+//    private final ITeacherService iTeacherService;
+//    private final IParentService iParentService;
+//
+//    public AllUserServiceImpl(IStudentService iStudentService, ITeacherService iTeacherService, IParentService iParentService) {
+//        this.iStudentService = iStudentService;
+//        this.iTeacherService = iTeacherService;
+//        this.iParentService = iParentService;
+//    }
 
     //设置用户编号的策略
     private static final Map<String, String> cityMap = new HashMap<>();
@@ -263,11 +270,10 @@ public class AllUserServiceImpl extends ServiceImpl<AllUserDao, AllUserEntity> i
      */
     @Override
     public String modifyPwd(String fname, String fpwd) {
-        AllUserEntity entity = new LambdaQueryChainWrapper<>(baseMapper)
-                .select(AllUserEntity::getPassword).eq(AllUserEntity::getUsername, fname).one();
-        if (entity != null) {
-            entity.setPassword(MD5Tools.getMD5(fpwd));
-            baseMapper.update(entity, new UpdateWrapper<AllUserEntity>().eq("username", fname));
+        AllUserEntity entity = new AllUserEntity();
+        entity.setPassword(MD5Tools.getMD5(fpwd));
+        if (baseMapper.update(entity, new UpdateWrapper<AllUserEntity>()
+                .eq("username", fname)) > 0) {
             return "success";
         } else {
             return "用户名不存在";
@@ -292,19 +298,20 @@ public class AllUserServiceImpl extends ServiceImpl<AllUserDao, AllUserEntity> i
     }
 
     /**
-     * 上传新头像
+     * 上传照片
      * @param username 用户名
      * @param file 新头像
      * @return 新头像路径
      */
     @Override
-    public Map<String, Object> modifyImg(String username, MultipartFile file) {
+    public Map<String, Object> modifyImg(String username, MultipartFile file, String what) {
         Map<String, Object> map = new HashMap<>();
         map.put("code", 0);
         map.put("msg", false);
         map.put("data", null);
         AllUserEntity entity = new LambdaQueryChainWrapper<>(baseMapper)
-                .select(AllUserEntity::getImg).eq(AllUserEntity::getUsername, username).one();
+                .select(AllUserEntity::getImg, AllUserEntity::getIdImgBefore,
+                        AllUserEntity::getIdImgAfter).eq(AllUserEntity::getUsername, username).one();
         if (entity == null) {
             return map;
         }
@@ -335,21 +342,57 @@ public class AllUserServiceImpl extends ServiceImpl<AllUserDao, AllUserEntity> i
             }
             //上传图片
             file.transferTo(files);
-            //删除旧头像
-            File oldImg = new File("D:/codeRepository/graduationProject/code/tutorWeb/"
-                    + entity.getImg());
-            if (oldImg.exists()) {
-                oldImg.delete();
-            }
-            //保存新路径
-            String newPath = "img/" + date + suffixName;
-            entity.setImg(newPath);
-            if (baseMapper.update(entity, new LambdaUpdateWrapper<AllUserEntity>()
-                    .eq(AllUserEntity::getUsername, username)) > 0) {
-                map.put("code", 200);
-                map.put("msg", true);
-                map.put("data", newPath);
-                return map;
+            if ("头像".equals(what)) {
+                //删除旧头像
+                File oldImg = new File("D:/codeRepository/graduationProject/code/tutorWeb/"
+                        + entity.getImg());
+                if (oldImg.exists()) {
+                    oldImg.delete();
+                }
+                //保存新路径
+                String newPath = "img/" + date + suffixName;
+                entity.setImg(newPath);
+                if (baseMapper.update(entity, new LambdaUpdateWrapper<AllUserEntity>()
+                        .eq(AllUserEntity::getUsername, username)) > 0) {
+                    map.put("code", 200);
+                    map.put("msg", true);
+                    map.put("data", newPath);
+                    return map;
+                }
+            } else if ("身份证正面".equals(what)) {
+                //删除旧照片
+                File oldImg = new File("D:/codeRepository/graduationProject/code/tutorWeb/"
+                        + entity.getIdImgBefore());
+                if (oldImg.exists()) {
+                    oldImg.delete();
+                }
+                //保存新路径
+                String newPath = "img/" + date + suffixName;
+                entity.setIdImgBefore(newPath);
+                if (baseMapper.update(entity, new LambdaUpdateWrapper<AllUserEntity>()
+                        .eq(AllUserEntity::getUsername, username)) > 0) {
+                    map.put("code", 200);
+                    map.put("msg", true);
+                    map.put("data", newPath);
+                    return map;
+                }
+            } else {
+                //删除旧照片
+                File oldImg = new File("D:/codeRepository/graduationProject/code/tutorWeb/"
+                        + entity.getIdImgAfter());
+                if (oldImg.exists()) {
+                    oldImg.delete();
+                }
+                //保存新路径
+                String newPath = "img/" + date + suffixName;
+                entity.setIdImgAfter(newPath);
+                if (baseMapper.update(entity, new LambdaUpdateWrapper<AllUserEntity>()
+                        .eq(AllUserEntity::getUsername, username)) > 0) {
+                    map.put("code", 200);
+                    map.put("msg", true);
+                    map.put("data", newPath);
+                    return map;
+                }
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -396,11 +439,7 @@ public class AllUserServiceImpl extends ServiceImpl<AllUserDao, AllUserEntity> i
     @Override
     public String modifyInformation(String user, String address, String qq, String tel, String gender,
                                     String city, String interest, String speciality) {
-        AllUserEntity entity = new LambdaQueryChainWrapper<>(baseMapper)
-                .eq(AllUserEntity::getUsername, user).one();
-        if (entity == null) {
-            return "false";
-        }
+        AllUserEntity entity = new AllUserEntity();
         entity.setAddress(address);
         entity.setQq(qq);
         entity.setTel(tel);
@@ -408,8 +447,32 @@ public class AllUserServiceImpl extends ServiceImpl<AllUserDao, AllUserEntity> i
         entity.setCity(city);
         entity.setInterest(interest);
         entity.setSpeciality(speciality);
-        baseMapper.update(entity, new LambdaUpdateWrapper<AllUserEntity>().eq(AllUserEntity::getUsername, user));
-        return "success";
+        if (baseMapper.update(entity, new LambdaUpdateWrapper<AllUserEntity>()
+                .eq(AllUserEntity::getUsername, user)) > 0) {
+            return "success";
+        } else {
+            return "false";
+        }
+    }
+
+    /**
+     * 用户实名认证
+     * @param truename 真实姓名
+     * @param idcard 身份证
+     * @return String
+     */
+    @Override
+    public String certification(String user, String truename, String idcard) {
+        AllUserEntity entity = new AllUserEntity();
+        entity.setTrueName(truename);
+        entity.setIdCard(idcard);
+        entity.setCertification("1");
+        if (baseMapper.update(entity, new LambdaUpdateWrapper<AllUserEntity>()
+                .eq(AllUserEntity::getUsername, user)) > 0) {
+            return "success";
+        } else {
+            return "false";
+        }
     }
 
 }

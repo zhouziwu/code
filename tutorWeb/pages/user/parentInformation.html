@@ -145,7 +145,7 @@
 								icon: 1,
 								time: 1000
 							}, function() {
-								window.location.href = "teacherInformation.html";
+								window.location.href = "parentInformation.html";
 							});
 						} else {
 							layer.msg("修改失败！", {
@@ -163,7 +163,8 @@
 					elem: '#btnImg', //绑定元素
 					url: 'http://localhost:8080/user/modifyImg', //上传接口
 					data: {
-						username: localStorage.getItem("tutor")
+						username: localStorage.getItem("tutor"),
+						what: "头像"
 					},
 					acceptMime: 'image/jpg, image/png, image/gif, image/bmp, image/jpeg',
 					/*method: 'get',*/
