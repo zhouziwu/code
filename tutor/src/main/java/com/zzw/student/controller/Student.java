@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 /**
  * 功能描述：TODO
  *
@@ -36,5 +38,17 @@ public class Student {
     @GetMapping("/modifyInformation")
     public String modifyInformation (String user, String grade) {
         return iStudentService.modifyInformation(user, grade);
+    }
+
+    /**
+     * 查询学员信息分页
+     * @param page 当前页
+     * @param limit 每页多少条
+     * @return map
+     */
+    @ApiOperation("查询学员信息分页")
+    @GetMapping("/getStudentByPage")
+    public Map<String, Object> getStudentByPage (long page, long limit) {
+        return iStudentService.getStudentByPage(page, limit);
     }
 }

@@ -144,4 +144,10 @@ public class AllUserEntity extends Model<AllUserEntity> {
      */
     @TableField("id_img_after")
     private String idImgAfter;
+
+    /**
+     * 下列属性为student表中数据
+     */
+    @TableField(exist = false)
+    private String grade;
 }

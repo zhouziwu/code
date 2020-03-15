@@ -3,6 +3,8 @@ package com.zzw.teacher.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zzw.teacher.entity.TeacherEntity;
 
+import java.util.Map;
+
 /**
  * //功能描述： 添加类/接口功能描述
  *
@@ -29,5 +31,23 @@ public interface ITeacherService extends IService<TeacherEntity> {
                               String major, String subject, String graduate, String tutorMode,
                               String selfAssessment, String charge);
 
-    TeacherEntity test();
+    /**
+     * 查询老师信息分页
+     * @param subject 科目
+     * @param gender 性别
+     * @param degree 学位
+     * @param page 当前页
+     * @param limit 每页多少条
+     * @return map
+     */
+    Map<String, Object> getTeacherByPage (String subject, String gender, String degree,
+                                          long page, long limit);
+
+    /**
+     * 查询优质老师信息分页
+     * @param page 当前页
+     * @param limit 每页多少条
+     * @return map
+     */
+    Map<String, Object> getGoodTeacher (long page, long limit);
 }

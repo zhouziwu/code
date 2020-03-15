@@ -1,7 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zzw.teacher.dao.TeacherDao">
-    <select id="test" resultType="com.zzw.teacher.entity.TeacherEntity">
-        select * from teacher
+    <select id="getTeacherByPage" resultType="com.zzw.teacher.entity.TeacherEntity">
+        select * from teacher left join all_user on teacher.all_user_id = all_user.id
+        <where>
+            <if test="subject != null and subject != ''">
+                and teacher.subject = #{subject}
+            </if>
+            <if test="gender != null and gender != ''">
+                and all_user.gender = #{gender}
+            </if>
+            <if test="degree != null and degree != ''">
+                and teacher.degree = #{degree}
+            </if>
+            <if test="graduate != null and graduate != ''">
+                and teacher.graduate = #{graduate}
+            </if>
+        </where>
+    </select>
+
+    <select id="getGoodTeacher" resultType="com.zzw.teacher.entity.TeacherEntity">
+        select * from teacher left join all_user on teacher.all_user_id = all_user.id
+        where teacher.credit_score >= 95 and all_user.certification = "1"
     </select>
 </mapper>

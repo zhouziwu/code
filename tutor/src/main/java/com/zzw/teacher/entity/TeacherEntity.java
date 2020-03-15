@@ -97,4 +97,28 @@ public class TeacherEntity extends Model<TeacherEntity> {
      */
     @TableField("charge")
     private String charge;
+
+    /**
+     * 下列属性均为all_user表中属性
+     */
+    @TableField(exist = false)
+    private String trueName;
+
+    @TableField(exist = false)
+    private String number;
+
+    @TableField(exist = false)
+    private String certification;
+
+    @TableField(exist = false)
+    private String qq;
+
+    @TableField(exist = false)
+    private String tel;
+
+    @TableField(exist = false)
+    private String city;
+
+    @TableField(exist = false)
+    private String gender;
 }

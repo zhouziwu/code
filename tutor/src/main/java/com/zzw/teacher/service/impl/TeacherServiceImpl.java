@@ -2,6 +2,8 @@ package com.zzw.teacher.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zzw.loginAndRegister.entity.AllUserEntity;
 import com.zzw.loginAndRegister.service.IAllUserService;
@@ -10,6 +12,9 @@ import com.zzw.teacher.entity.TeacherEntity;
 import com.zzw.teacher.service.ITeacherService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * //功能描述： 添加类/接口功能描述
@@ -64,8 +69,57 @@ public class TeacherServiceImpl extends ServiceImpl<TeacherDao, TeacherEntity> i
         return "success";
     }
 
+    /**
+     * 查询老师信息分页
+     * @param subject 科目
+     * @param gender 性别
+     * @param degree 学位
+     * @param page 当前页
+     * @param limit 每页多少条
+     * @return map
+     */
     @Override
-    public TeacherEntity test() {
-        return this.baseMapper.test();
+    public Map<String, Object> getTeacherByPage(String subject, String gender, String degree,
+                                                long page, long limit) {
+        Page<TeacherEntity> pages = new Page<>(page, limit);
+        String degree1, graduate;
+        if (degree != null && degree != "") {
+            degree1 = degree.substring(0, 2);
+            String tem = degree.substring(2);
+            if ("在读".equals(tem)) {
+                graduate = "0";
+            } else {
+                graduate = "1";
+            }
+        } else {
+            degree1 = "";
+            graduate = "";
+        }
+        IPage<TeacherEntity> iPage = baseMapper.getTeacherByPage(pages, subject, gender, degree1, graduate);
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", 0);
+        map.put("msg", "");
+        map.put("count", iPage.getTotal());
+        map.put("data", iPage.getRecords());
+        return map;
     }
+
+    /**
+     * 查询优质老师信息分页
+     * @param page 当前页
+     * @param limit 每页多少条
+     * @return map
+     */
+    @Override
+    public Map<String, Object> getGoodTeacher(long page, long limit) {
+        Page<TeacherEntity> pages = new Page<>(page, limit);
+        IPage<TeacherEntity> iPage = baseMapper.getGoodTeacher(pages);
+        Map<String, Object> map = new HashMap<>();
+        map.put("code", 0);
+        map.put("msg", "");
+        map.put("count", iPage.getTotal());
+        map.put("data", iPage.getRecords());
+        return map;
+    }
+
 }

@@ -3,6 +3,8 @@ package com.zzw.student.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zzw.student.entity.StudentEntity;
 
+import java.util.Map;
+
 /**
  * 功能描述：TODO
  *
@@ -13,10 +15,18 @@ import com.zzw.student.entity.StudentEntity;
 public interface IStudentService extends IService<StudentEntity> {
 
     /**
-     * 修改老师的信息
+     * 修改学员的信息
      * @param user 用户名
      * @param grade 年级
      * @return String
      */
     String modifyInformation (String user, String grade);
+
+    /**
+     * 查询学员信息分页
+     * @param page 当前页
+     * @param limit 每页多少条
+     * @return map
+     */
+    Map<String, Object> getStudentByPage (long page, long limit);
 }
