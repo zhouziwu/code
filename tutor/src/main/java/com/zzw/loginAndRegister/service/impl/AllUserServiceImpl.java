@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.additional.query.impl.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zzw.base.Idcard;
 import com.zzw.loginAndRegister.dao.AllUserDao;
 import com.zzw.loginAndRegister.entity.AllUserEntity;
 import com.zzw.loginAndRegister.service.IAllUserService;
@@ -276,7 +277,7 @@ public class AllUserServiceImpl extends ServiceImpl<AllUserDao, AllUserEntity> i
                 .eq("username", fname)) > 0) {
             return "success";
         } else {
-            return "用户名不存在";
+            return "false";
         }
     }
 
@@ -328,7 +329,7 @@ public class AllUserServiceImpl extends ServiceImpl<AllUserDao, AllUserEntity> i
             String suffixName = originalName.substring(originalName.lastIndexOf("."));
             //设置时间戳为图片名称，防止重名
             long date = System.currentTimeMillis();
-            String filepath = "D:/codeRepository/graduationProject/code/tutorWeb/img/"
+            String filepath = "D:\\codeRepository\\graduationProject\\tutorWeb\\tutorWeb\\img\\"
                     + date + suffixName;
             File files = new File(filepath);
             //创建文件夹及文件
@@ -342,9 +343,22 @@ public class AllUserServiceImpl extends ServiceImpl<AllUserDao, AllUserEntity> i
             }
             //上传图片
             file.transferTo(files);
+            //当上传的图片是身份证照片时，调用百度AI图片识别接口验证
+            if ("身份证反面".equals(what)) {
+                String idcard = Idcard.idcard(filepath);
+                if (!"normal".equals(idcard.substring(idcard.indexOf("image_status")+16,
+                        idcard.indexOf("words_result",
+                                idcard.indexOf("image_status"))-4))) {
+                    //删除已上传但是不符合的照片
+                    if (files.exists()) {
+                        files.delete();
+                    }
+                    return map;
+                }
+            }
             if ("头像".equals(what)) {
                 //删除旧头像
-                File oldImg = new File("D:/codeRepository/graduationProject/code/tutorWeb/"
+                File oldImg = new File("D:\\codeRepository\\graduationProject\\tutorWeb\\tutorWeb\\"
                         + entity.getImg());
                 if (oldImg.exists()) {
                     oldImg.delete();
@@ -361,7 +375,7 @@ public class AllUserServiceImpl extends ServiceImpl<AllUserDao, AllUserEntity> i
                 }
             } else if ("身份证正面".equals(what)) {
                 //删除旧照片
-                File oldImg = new File("D:/codeRepository/graduationProject/code/tutorWeb/"
+                File oldImg = new File("D:\\codeRepository\\graduationProject\\tutorWeb\\tutorWeb\\"
                         + entity.getIdImgBefore());
                 if (oldImg.exists()) {
                     oldImg.delete();
@@ -378,7 +392,7 @@ public class AllUserServiceImpl extends ServiceImpl<AllUserDao, AllUserEntity> i
                 }
             } else {
                 //删除旧照片
-                File oldImg = new File("D:/codeRepository/graduationProject/code/tutorWeb/"
+                File oldImg = new File("D:\\codeRepository\\graduationProject\\tutorWeb\\tutorWeb\\"
                         + entity.getIdImgAfter());
                 if (oldImg.exists()) {
                     oldImg.delete();
